@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:traveltales/widgets/my_input_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:traveltales/modules/classes.dart' as ima;
+import 'package:traveltales/modules/classes.dart';
 import 'details_screen.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -24,12 +24,12 @@ class MyHomePage extends StatelessWidget {
         title: const Text('My Journey'),
       ),
       body: FutureBuilder(
-        future: Provider.of<ima.ImageFile>(context, listen: false).fetchImage(),
+        future: Provider.of<ImageFile>(context, listen: false).fetchImage(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          return Consumer<ima.ImageFile>(
+          return Consumer<ImageFile>(
             builder: (ctx, image, _) {
               if (image.items.isEmpty) {
                 return Center(child: const Text('Start adding Your Story'));
@@ -48,8 +48,10 @@ class MyHomePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: GestureDetector(
                         onTap: () {
-                          print(
-                            image.items[i].title,
+                          Navigator.pushNamed(
+                            context,
+                            DetailsScreen.routeName,
+                            arguments: image.items[i].id,
                           );
                         },
                         child: Image.file(
@@ -61,9 +63,9 @@ class MyHomePage extends StatelessWidget {
                     footer: GridTileBar(
                       leading: Text(
                         image.items[i].title,
-                        style: TextStyle(fontSize: 30.0),
+                        style: const TextStyle(fontSize: 30.0),
                       ),
-                      title: Text(''),
+                      title: const Text(''),
                       subtitle: Text(image.items[i].id),
                     ),
                   ),

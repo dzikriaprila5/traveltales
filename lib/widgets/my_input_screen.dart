@@ -17,6 +17,18 @@ class _MyInputScreenState extends State<MyInputScreen> {
   final _storyController = TextEditingController();
 
   File? savedImage;
+  String? imageId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null && args is Map<String, dynamic>) {
+      imageId = args['imageId'] as String?;
+      _titleController.text = args['title'] as String;
+      _storyController.text = args['story'] as String;
+    }
+  }
 
   void onSave() {
     if (_titleController.text.isEmpty ||
@@ -24,8 +36,20 @@ class _MyInputScreenState extends State<MyInputScreen> {
         savedImage == null) {
       return;
     } else {
-      Provider.of<ImageFile>(context, listen: false).addImagePlace(
-          _titleController.text, _storyController.text, savedImage!);
+      if (imageId != null) {
+        Provider.of<ImageFile>(context, listen: false).updateImage(
+          imageId!,
+          _titleController.text,
+          _storyController.text,
+          savedImage!,
+        );
+      } else {
+        Provider.of<ImageFile>(context, listen: false).addImagePlace(
+          _titleController.text,
+          _storyController.text,
+          savedImage!,
+        );
+      }
       Navigator.pop(context);
     }
   }
@@ -37,12 +61,22 @@ class _MyInputScreenState extends State<MyInputScreen> {
   }
 
   @override
+  void dispose() {
+    _titleController.dispose();
+    _storyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Page'),
+        title: const Text('Input Page'),
         actions: [
-          IconButton(icon: Icon(Icons.save), onPressed: onSave),
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: onSave,
+          ),
         ],
       ),
       body: Padding(
@@ -52,20 +86,20 @@ class _MyInputScreenState extends State<MyInputScreen> {
             children: [
               TextField(
                 controller: _titleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Title',
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               TextField(
                 controller: _storyController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Description',
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 30),
               ImageInput(onImageSave),
             ],
           ),

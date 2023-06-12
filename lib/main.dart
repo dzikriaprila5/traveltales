@@ -10,7 +10,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -20,14 +20,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (ctx) => ImageFile(),
+      create: (context) => ImageFile(),
       child: MaterialApp(
         title: 'TravelTales',
         theme: ThemeData.dark(),
         home: MyHomePage(),
         routes: {
           MyInputScreen.routeName: (ctx) => MyInputScreen(),
-          DetailesScreen.routeName: (ctx) => DetailesScreen(),
+          DetailsScreen.routeName: (ctx) => DetailsScreen(),
         },
       ),
     );

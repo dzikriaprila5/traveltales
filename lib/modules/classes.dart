@@ -35,9 +35,9 @@ class ImageFile with ChangeNotifier {
     notifyListeners();
     await DataHelper.insert('user_image', {
       'id': newImage.id,
-      'story': newImage.story,
-      'image': newImage.image.path,
       'title': newImage.title,
+      'image': newImage.image.path,
+      'story': newImage.story,
     });
   }
 
@@ -50,13 +50,40 @@ class ImageFile with ChangeNotifier {
     _items = list
         .map(
           (item) => MyImage(
-            image: File(item['image']),
-            title: item['title'],
-            id: item['id'],
-            story: item['story'],
+            id: item['id'] as String,
+            title: item['title'] as String,
+            story: item['story'] as String,
+            image: File(item['image'] as String),
           ),
         )
         .toList();
     notifyListeners();
+  }
+
+  void updateImage(
+      String imageId, String title, String story, File image) async {
+    final existingImageIndex =
+        _items.indexWhere((image) => image.id == imageId);
+    if (existingImageIndex >= 0) {
+      final updatedImage = MyImage(
+        id: imageId,
+        title: title,
+        story: story,
+        image: image,
+      );
+      _items[existingImageIndex] = updatedImage;
+      notifyListeners();
+      await DataHelper.update('user_image', imageId, {
+        'title': updatedImage.title,
+        'image': updatedImage.image.path,
+        'story': updatedImage.story,
+      });
+    }
+  }
+
+  void deleteImage(String imageId) async {
+    _items.removeWhere((image) => image.id == imageId);
+    notifyListeners();
+    await DataHelper.delete('user_image', imageId);
   }
 }

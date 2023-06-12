@@ -60,33 +60,37 @@ class _ImageInputState extends State<ImageInput> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment
+          .start, // Mengatur penempatan widget di atas pada baris
       children: [
-        Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.deepOrange),
+        Expanded(
+          child: Container(
+            height: 200,
+            decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.deepOrange),
+            ),
+            child: _imageFile != null && _imageFile!.existsSync()
+                ? Image.file(
+                    _imageFile!,
+                    fit: BoxFit.cover,
+                  )
+                : Center(child: Text('Tidak ada gambar')),
           ),
-          child: _imageFile != null && _imageFile!.existsSync()
-              ? Image.file(
-                  _imageFile!,
-                  fit: BoxFit.cover,
-                )
-              : Center(child: Text('No image added')),
         ),
         SizedBox(width: 20),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment
+              .start, // Mengatur penempatan widget di kiri pada kolom
           children: [
             TextButton.icon(
               onPressed: _galleryPicture,
               icon: Icon(Icons.image),
-              label: Text('Add your image'),
+              label: Text('Tambahkan gambar'),
             ),
             TextButton.icon(
               onPressed: _takePicture,
               icon: Icon(Icons.camera),
-              label: Text('Take a Picture'),
+              label: Text('Ambil Gambar'),
             ),
           ],
         ),
